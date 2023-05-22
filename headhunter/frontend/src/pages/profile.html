@@ -1,0 +1,24 @@
+{% extends "root.html" %}
+{% load static %}
+
+{% block head %}
+{% endblock head %}
+
+{% block body %}
+<article>
+    <h1>Ласкаво просимо, {{ user.first_name }}!</h1>
+</article>
+<article>
+    <a class="button large" href="/profile/summary/">
+        <i class="fi fi-sr-file"></i>
+        <span>Резюме</span>
+    </a>
+    <a class="button large" href="/profile/personal/">
+        <i class="fi fi-sr-file-circle-info"></i>
+        <span>Особисті дані</span>
+    </a>
+    <a class="button transparent" href="oauth/logout/">
+        <span>Вихід з аккаунту</span>
+    </a>
+</article>
+{% endblock body %}

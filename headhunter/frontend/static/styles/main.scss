@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Flow+Circular&family=Poppins:wght@900&family=Roboto:wght@400;700&display=swap');
+
+/*
+font-family: 'Flow Circular', cursive;
+font-family: 'Poppins', sans-serif;
+font-family: 'Roboto', sans-serif;
+*/
+
+:root {
+    --background: #1D1E1F;
+    --section: #292B2F;
+    --foreground: #FFFFFF;
+    --accent: #2CA6FF;
+    --disturb: #FF2C2C;
+    --success: #20ff45;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+}
