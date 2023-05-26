@@ -468,4 +468,4 @@ CITY_NAMES = {
 
 
 def get_city_name(city: str):
-    return CITY_NAMES.get(city, "?? Невідоме місто ??")
+    return CITY_NAMES.get(city, "<?>")

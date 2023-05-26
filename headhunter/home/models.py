@@ -27,6 +27,14 @@ EDUCATIONS = (
     ("A", "Вища"),
 )
 
+EDUCATIONS_MAP = {
+    "E": "Дошкільна",
+    "D": "Повна загальна середня",
+    "C": "Професійна",
+    "B": "Фахова передвища",
+    "A": "Вища",
+}
+
 
 class CustomUserManager(BaseUserManager):
     def _create_user(
@@ -153,7 +161,7 @@ class Vacancy(models.Model):
     looking_for = models.CharField(max_length=32, default="Unknown")
     description = models.TextField()
     thumbnail = models.CharField(max_length=512, null=True, blank=True)
-    publisher = models.CharField(max_length=128)
+    publisher = models.EmailField()
     candidates = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
@@ -166,10 +174,33 @@ class Vacancy(models.Model):
     def get_city(self):
         return get_city_name(str(self.city))
 
+    def get_type(self):
+        return [i for i in WORK_TYPES if i[0] == str(self.type)][0][1]
+
+    def get_candidates(self):
+        return [User.objects.filter(id=_id.id).first().email for _id in self.candidates.all()]
+
 
 class Summary(models.Model):
     education = models.CharField(max_length=1, choices=EDUCATIONS)
     profession = models.CharField(max_length=64)
     end_of_education = models.DateField()
     skills = models.CharField(max_length=256)
+    city = models.CharField(max_length=64)
+    views = models.TextField(default="")
     user_id = models.BigIntegerField()
+
+    def get_education(self):
+        return EDUCATIONS_MAP.get(str(self.education))
+
+    def get_city(self):
+        return get_city_name(str(self.city))
+
+    def get_view_count(self):
+        return len(str(self.views).split(";"))
+
+    def add_view(self, user_id: int):
+        views = str(self.views).split(";")
+        if str(user_id) not in views:
+            self.views = ";".join([*views, str(user_id)])
+            self.save()

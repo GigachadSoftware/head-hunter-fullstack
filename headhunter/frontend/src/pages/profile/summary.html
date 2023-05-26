@@ -12,4 +12,16 @@
         <span>Додати</span>
     </a>
 </div>
+{% for summary in summaries %}
+<a href="/summary/@{{ summary.id }}/">
+    <div>
+        <h1>{{ summary.profession }}</h1>
+        <span>{{ summary.skills }}</span>
+        <span>{{ summary.get_education }} - {{ summary.end_of_education }}</span>
+    </div>
+    <div>
+        {{ summary.get_view_count }}
+    </div>
+</a>
+{% endfor %}
 {% endblock body %}

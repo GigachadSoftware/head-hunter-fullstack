@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.core.handlers.wsgi import WSGIRequest
 
-from home.forms import SignUpForm
+from home.forms import NewSummaryForm, SignUpForm
 from home.models import Summary, User, Vacancy
 
 
@@ -111,3 +111,37 @@ def render_profile_summary(request: WSGIRequest) -> HttpResponse:
         return redirect(render_home)
     summaries = Summary.objects.filter(user_id=request.user.id).all()
     return render(request, "pages/profile/summary.html", {"summaries": summaries})
+
+
+def new_profile_summary(request: WSGIRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect(render_home)
+    if request.method == "GET":
+        return render(request, "pages/profile/new_summary.html", {})
+    form = NewSummaryForm(request.POST)
+    if not form.is_valid():
+        return render(request, "pages/profile/new_summary.html", {})
+    summary = Summary(
+        education=form.cleaned_data["education"],
+        profession=form.cleaned_data["profession"],
+        city=form.cleaned_data["city"],
+        end_of_education=form.cleaned_data["end_of_education"],
+        skills=form.cleaned_data["skills"],
+        user_id=request.user.id,
+    )
+    summary.save()
+    return redirect(render_profile_summary)
+
+
+def render_summary(request: WSGIRequest, summary_id: int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return redirect(render_home)
+    summary = Summary.objects.filter(id=summary_id).first()
+    if not summary:
+        return redirect(render_home)
+    summary.add_view(request.user.id)
+    return render(
+        request,
+        "pages/summary.html",
+        {"summary": summary, "owner": User.objects.filter(id=summary.user_id).first()},
+    )
