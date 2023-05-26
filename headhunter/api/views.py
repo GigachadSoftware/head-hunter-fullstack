@@ -2,8 +2,8 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from home.models import User, Vacancy, Summary
-from home.tests import get_city_name
+from home.models import EDUCATIONS_MAP, ROLES, User, Vacancy, Summary, WORK_TYPES
+from home.tests import CITY_NAMES, get_city_name
 from .serializers import UserSerializer, VacancySerializer, SummarySerializer
 
 
@@ -11,11 +11,63 @@ from .serializers import UserSerializer, VacancySerializer, SummarySerializer
 def get_routes(request: WSGIRequest):
     return Response({
         "/": "This page",
+        "/get_cities/": "Get list of all possible cities",
+        "/get_educations/": "Get list of all possible educations",
+        "/get_roles/": "Get list of all possible roles",
+        "/get_work_types/": "Get list of all possible work types",
         "/get_user/": "Get the current authenticated user",
         "/get_summaries/": "Get all summaries of the authenticated user",
         "/fetch_summaries/<USER_EMAIL>": "Get all summaries of a user",
         "/get_vacancies/": "Get all vacancies",
         "/get_city_name/<CITY_ID>/": "Get the name (in Ukrainian) of a city using its ID",
+    })
+
+
+@api_view(["GET"])
+def get_cities(request: WSGIRequest):
+    return Response({
+        "cities": [
+            {
+                "id": city,
+                "name": CITY_NAMES.get(city),
+            } for city in CITY_NAMES.keys()
+        ]
+    })
+
+
+@api_view(["GET"])
+def get_educations(request: WSGIRequest):
+    return Response({
+        "educations": [
+            {
+                "id": education,
+                "name": EDUCATIONS_MAP.get(education),
+            } for education in EDUCATIONS_MAP.keys()
+        ]
+    })
+
+
+@api_view(["GET"])
+def get_roles(request: WSGIRequest):
+    return Response({
+        "roles": [
+            {
+                "id": role[0],
+                "name": role[1],
+            } for role in ROLES
+        ]
+    })
+
+
+@api_view(["GET"])
+def get_work_types(request: WSGIRequest):
+    return Response({
+        "work_types": [
+            {
+                "id": work_type[0],
+                "name": work_type[1],
+            } for work_type in WORK_TYPES
+        ]
     })
 
 
