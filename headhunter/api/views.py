@@ -15,7 +15,7 @@ def get_routes(request: WSGIRequest):
         "/get_summaries/": "Get all summaries of the authenticated user",
         "/fetch_summaries/<USER_EMAIL>": "Get all summaries of a user",
         "/get_vacancies/": "Get all vacancies",
-        "/get_city/<CITY_ID>/": "Get the name (in Ukrainian) of a city using its ID",
+        "/get_city_name/<CITY_ID>/": "Get the name (in Ukrainian) of a city using its ID",
     })
 
 
@@ -40,7 +40,7 @@ def get_summaries(request: WSGIRequest):
 
 @api_view(["GET"])
 def fetch_summaries(request: WSGIRequest, user: str):
-    return Response(SummarySerializer(Summary.objects.filter(email=user).all(), many=True).data)
+    return Response(SummarySerializer(Summary.objects.filter(user_id=User.objects.filter(email=user).first().id).all(), many=True).data)
 
 
 @api_view(["GET"])
