@@ -9,7 +9,7 @@
     <header>
         <div>
             <h1>{{ vacancy.title }}</h1>
-            <span>{{ vacancy.get_city }}</span>
+            <span>{{ vacancy.get_city }}, {{ vacancy.get_type }}</span>
             <em>{{ vacancy.creation_time }}</em>
         </div>
         <div>
@@ -24,18 +24,22 @@
     </header>
     <span>{{ vacancy.description }}</span>
     {% if user.role == "W" %}
-
-    {% if user in vacancy.candidates.all %}
-    <a href="/vacancy/@{{ vacancy.id }}/cancel/" class="button submit">
-        <i class="fi fi-sr-delete-document"></i>
-        <span>Скасувати запис</span>
+        {% if user in vacancy.candidates.all %}
+        <a href="/vacancy/@{{ vacancy.id }}/cancel/" class="button submit">
+            <i class="fi fi-sr-delete-document"></i>
+            <span>Скасувати запис</span>
+        </a>
+        {% else %}
+        <a href="/vacancy/@{{ vacancy.id }}/appeal/" class="button submit">
+            <i class="fi fi-sr-memo-circle-check"></i>
+            <span>Відгукнутися</span>
+        </a>
+        {% endif %}
+    {% elif user.role == "E" and vacancy.publisher == user.email %}
+    <a href="/vacancy/@{{ vacancy.id }}/edit/" class="button submit">
+        <i class="fi fi-bs-pencil"></i>
+        <span>Редагувати</span>
     </a>
-    {% else %}
-    <a href="/vacancy/@{{ vacancy.id }}/appeal/" class="button submit">
-        <i class="fi fi-sr-memo-circle-check"></i>
-        <span>Відгукнутися</span>
-    </a>
-    {% endif %}
     {% endif %}
 </div>
 {% endblock body %}

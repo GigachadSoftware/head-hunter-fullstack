@@ -13,13 +13,14 @@
     </a>
 </div>
 {% for summary in summaries %}
-<a href="/summary/@{{ summary.id }}/">
+<a href="/summary/@{{ summary.id }}/" class="brief_summary">
     <div>
         <h1>{{ summary.profession }}</h1>
         <span>{{ summary.skills }}</span>
         <span>{{ summary.get_education }} - {{ summary.end_of_education }}</span>
     </div>
     <div>
+        <i style="opacity: 0.1;" class="fi fi-sr-eye"></i>
         {{ summary.get_view_count }}
     </div>
 </a>

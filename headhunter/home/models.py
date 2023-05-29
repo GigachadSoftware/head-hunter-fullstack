@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, UserManager
 from django.db import models
@@ -151,13 +153,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_city(self):
         return get_city_name(str(self.city))
 
+    def get_birthday(self):
+        return self.birthday.strftime("%Y-%m-%d")
+
 
 class Vacancy(models.Model):
     objects = models.Manager()
     title = models.CharField(max_length=128)
     city = models.CharField(max_length=64)
     type = models.CharField(max_length=1, choices=WORK_TYPES)
-    creation_time = models.DateTimeField(default=timezone.now)
+    creation_time = models.DateTimeField(auto_created=True)
     looking_for = models.CharField(max_length=32, default="Unknown")
     description = models.TextField()
     thumbnail = models.CharField(max_length=512, null=True, blank=True)
