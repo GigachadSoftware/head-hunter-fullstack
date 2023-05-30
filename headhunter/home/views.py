@@ -1,8 +1,17 @@
+import base64
+import json
+
 from allauth.socialaccount.models import SocialAccount
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+from liqpay3 import liqpay
+from liqpay3.liqpay import LiqPay
 
 from home.forms import NewSummaryForm, SignUpForm, VacancyForm
 from home.models import Summary, User, Vacancy
@@ -13,6 +22,7 @@ def render_home(request: WSGIRequest) -> HttpResponse:
         if request.user.is_authenticated:
             if request.user.city is None:
                 return redirect(render_sign_up)
+
         return render(request, "pages/home.html", {"page": "home"})
 
     vacancies = Vacancy.objects.all()
@@ -232,3 +242,37 @@ def render_new_vacancy(request: WSGIRequest):
     vacancy.thumbnail = form.cleaned_data.get("thumbnail")
     vacancy.save()
     return redirect(f"/vacancy/@{vacancy.id}/")
+
+
+class PayView(TemplateView):
+    template_name = "pages/pay.html"
+
+    def get(self, request, *args, **kwargs):
+        api = LiqPay("sandbox_i54579029593", "sandbox_EHx0Sf9PVpL9eqE4rcapQHGT2jJj1siOMQgGbPms")
+        params = {
+            'action'     : 'pay',
+            'amount'     : '19',
+            'currency'   : 'UAH',
+            'description': 'Testing payment',
+            'order_id'   : 'order_id_1',
+            'version'    : '3',
+            'sandbox'    : 1,  # sandbox mode, set to 1 to enable it
+            'server_url' : 'https://django-server-production-fac1.up.railway.app/pay-callback/',  # url to callback view
+        }
+        signature = api.cnb_signature(params)
+        data = base64.b64encode(json.dumps(params).encode('utf8'))
+        return render(request, self.template_name, {'signature': signature, 'data': data})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PayCallbackView(View):
+    def post(self, request, *args, **kwargs):
+        liqpay = LiqPay("sandbox_i54579029593", "sandbox_EHx0Sf9PVpL9eqE4rcapQHGT2jJj1siOMQgGbPms")
+        data = request.POST.get('data')
+        signature = request.POST.get('signature')
+        sign = liqpay.str_to_sign(
+            "sandbox_EHx0Sf9PVpL9eqE4rcapQHGT2jJj1siOMQgGbPms" + data + "sandbox_EHx0Sf9PVpL9eqE4rcapQHGT2jJj1siOMQgGbPms")
+        if sign == signature:
+            print('callback is valid')
+        response = liqpay.decode_data_from_str(data)
+        print('callback data', response)
+        return HttpResponse()

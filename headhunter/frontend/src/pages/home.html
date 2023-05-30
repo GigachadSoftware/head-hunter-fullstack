@@ -42,12 +42,4 @@
     <span>{{ search_result.creation_time }} - {{ search_result.publisher }}</span>
 </a>
 {% endfor %}
-
-<form action="/api/register_account/" method="post">
-    <input type="text" name="email" value="michaelbroplay@gmail.com">
-    <input type="text" name="first_name" value="Chad">
-    <input type="text" name="last_name" value="Software">
-    <input type="text" name="uid" value="5">
-    <button type="submit">DONE</button>
-</form>
 {% endblock body %}
