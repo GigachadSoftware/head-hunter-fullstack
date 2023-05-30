@@ -1,10 +1,11 @@
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
-from rest_framework.response import Response
+from django.http import HttpResponseNotFound
 from rest_framework.decorators import api_view
-from home.models import EDUCATIONS_MAP, ROLES, User, Vacancy, Summary, WORK_TYPES
+from rest_framework.response import Response
+
+from home.models import EDUCATIONS_MAP, ROLES, Summary, User, Vacancy, WORK_TYPES
 from home.tests import CITY_NAMES, get_city_name
-from .serializers import UserSerializer, VacancySerializer, SummarySerializer
+from .serializers import SummarySerializer, UserSerializer, VacancySerializer
 
 
 @api_view(["GET"])

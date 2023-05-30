@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Flow+Circular&family=Poppins:wght@700&family=Roboto:wght@400;700&display=swap");
-body > header hr, body, .button, textarea, select, input, .gap {
+body > header hr, body, .vacancy > hr, .button, textarea, select, input, .gap {
   appearance: none;
   border: none;
   outline: none;
@@ -20,7 +20,7 @@ body > header hr, body, .button, textarea, select, input, .gap {
   flex-direction: row;
 }
 
-body > main form.row, body > main > div, body > header, .brief_summary > div:last-child, .button, .input {
+body > main form.row, body > main > div, body > header, .brief_summary > div:last-child, .candidate, .button, .input {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -189,6 +189,11 @@ textarea:focus {
 .vacancy {
   gap: 2rem;
 }
+.vacancy > hr {
+  width: 100%;
+  height: 2px;
+  background-color: var(--section);
+}
 .vacancy > header {
   gap: 2rem;
 }
@@ -219,6 +224,23 @@ textarea:focus {
   object-fit: cover;
 }
 .vacancy > a {
+  margin-left: auto;
+}
+
+.candidate {
+  background-color: rgba(32, 255, 69, 0.15);
+  color: rgb(32, 255, 69);
+  border: 1px solid rgb(32, 255, 69);
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  gap: 1rem;
+}
+.candidate em {
+  font-style: normal;
+  opacity: 0.3;
+}
+.candidate .button {
+  padding: 0.5rem 1rem;
   margin-left: auto;
 }
 
